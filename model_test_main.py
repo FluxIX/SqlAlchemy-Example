@@ -55,12 +55,12 @@ def _query_db( engine ):
    student = db_session.query( Student ).first()
 
    print( "Student '{}' course section count: {:d}".format( student.name, db_session.query( CourseSection ).filter( Course.id == CourseSection.course_id ).filter( CourseSection.id == CourseSectionMembers.course_section_id ).filter( CourseSectionMembers.student_id == student.id ).count() ) )
-   for course, offering in db_session.query( Course, CourseSection ).filter( Course.id == CourseSection.course_id ).filter( CourseSection.id == CourseSectionMembers.course_section_id ).filter( CourseSectionMembers.student_id == student.id ).order_by( CourseSection.time, Course.name ).all():
-      print( "--> {}: {}".format( offering.time.strftime( "%H:%M:%S" ), course.name ) )
+   for course, section in db_session.query( Course, CourseSection ).filter( Course.id == CourseSection.course_id ).filter( CourseSection.id == CourseSectionMembers.course_section_id ).filter( CourseSectionMembers.student_id == student.id ).order_by( CourseSection.time, Course.name ).all():
+      print( "--> {}: {}".format( section.time.strftime( "%H:%M:%S" ), course.name ) )
 
    print( "Student '{}' course section count: {:d}".format( student.name, len( student.course_sections ) ) )
-   for offering in student.course_sections:
-      print( "--> {}: {}".format( offering.time.strftime( "%H:%M:%S" ), offering.course.name ) )
+   for section in student.course_sections:
+      print( "--> {}: {}".format( section.time.strftime( "%H:%M:%S" ), section.course.name ) )
 
 def main():
    db_filename = "model_test_db.sqlite3"
