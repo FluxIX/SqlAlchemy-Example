@@ -4,7 +4,7 @@ import os, os.path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from model_test import Student, Course, CourseOffering, CourseMembers, create_tables
+from model_test import Student, Course, CourseSection, CourseSectionMembers, create_tables
 
 _session_type = None
 def get_session_type( engine_instance ):
@@ -37,13 +37,13 @@ def _build_db( engine, db_file_path, ):
 
    db_session.commit() # Must commit before adding the dependent records.
 
-   course_offerings = [ CourseOffering( course_id = c.id, time = t ) for c in courses for t in times ]
-   db_session.add_all( course_offerings )
+   course_sections = [ CourseSection( course_id = c.id, time = t ) for c in courses for t in times ]
+   db_session.add_all( course_sections )
 
    db_session.commit()
 
-   course_members = [ CourseMembers( course_offering_id = c.id, student_id = s.id ) for c in course_offerings for s in students ]
-   db_session.add_all( course_members )
+   course_section_members = [ CourseSectionMembers( course_section_id = c.id, student_id = s.id ) for c in course_sections for s in students ]
+   db_session.add_all( course_section_members )
 
    db_session.commit()
 
@@ -54,8 +54,8 @@ def _query_db( engine ):
 
    student = db_session.query( Student ).first()
 
-   print( "Student '{}' course section count: {:d}".format( student.name, db_session.query( CourseOffering ).filter( Course.id == CourseOffering.course_id ).filter( CourseOffering.id == CourseMembers.course_offering_id ).filter( CourseMembers.student_id == student.id ).count() ) )
-   for course, offering in db_session.query( Course, CourseOffering ).filter( Course.id == CourseOffering.course_id ).filter( CourseOffering.id == CourseMembers.course_offering_id ).filter( CourseMembers.student_id == student.id ).order_by( CourseOffering.time, Course.name ).all():
+   print( "Student '{}' course section count: {:d}".format( student.name, db_session.query( CourseSection ).filter( Course.id == CourseSection.course_id ).filter( CourseSection.id == CourseSectionMembers.course_section_id ).filter( CourseSectionMembers.student_id == student.id ).count() ) )
+   for course, offering in db_session.query( Course, CourseSection ).filter( Course.id == CourseSection.course_id ).filter( CourseSection.id == CourseSectionMembers.course_section_id ).filter( CourseSectionMembers.student_id == student.id ).order_by( CourseSection.time, Course.name ).all():
       print( "--> {}: {}".format( offering.time.strftime( "%H:%M:%S" ), course.name ) )
 
    print( "Student '{}' course section count: {:d}".format( student.name, len( student.course_sections ) ) )

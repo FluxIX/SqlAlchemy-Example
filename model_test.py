@@ -20,8 +20,8 @@ def create_tables( engine ):
 class _TableNames:
    Student = "students"
    Course = "courses"
-   CourseOffering = "course_offerings"
-   CourseMember = "course_members"
+   CourseSection = "course_sections"
+   CourseSectionMembers = "course_section_members"
 
 class Student( _Base ):
    __tablename__  = _TableNames.Student
@@ -29,7 +29,7 @@ class Student( _Base ):
    id = Column( Integer, primary_key = True )
    name = Column( String( 50 ), unique = True, nullable = False )
 
-   course_sections = relationship( "CourseOffering", secondary = _TableNames.CourseMember )
+   course_sections = relationship( "CourseSection", secondary = _TableNames.CourseSectionMembers )
 
 class Course( _Base ):
    __tablename__ = _TableNames.Course
@@ -38,18 +38,18 @@ class Course( _Base ):
    name = Column( String( 50 ), unique = True, nullable = False )
    description = Column( String( 16000 ), nullable = True )
 
-class CourseOffering( _Base ):
-   __tablename__ = _TableNames.CourseOffering
+class CourseSection( _Base ):
+   __tablename__ = _TableNames.CourseSection
 
    course_id = Column( Integer, ForeignKey( _TableNames.Course + ".id" ), primary_key = True )
    time = Column( Time, primary_key = True )
    id = Column( String( 36 ), nullable = True, default = generate_uuid )
 
-   students = relationship( "Student", secondary = _TableNames.CourseMember )
+   students = relationship( "Student", secondary = _TableNames.CourseSectionMembers )
    course = relationship( "Course", uselist = False )
 
-class CourseMembers( _Base ):
-   __tablename__ = _TableNames.CourseMember
+class CourseSectionMembers( _Base ):
+   __tablename__ = _TableNames.CourseSectionMembers
 
-   course_offering_id = Column( Integer, ForeignKey( _TableNames.CourseOffering + ".id" ), primary_key = True )
+   course_section_id = Column( Integer, ForeignKey( _TableNames.CourseSection + ".id" ), primary_key = True )
    student_id = Column( Integer, ForeignKey( _TableNames.Student + ".id" ), primary_key = True )
