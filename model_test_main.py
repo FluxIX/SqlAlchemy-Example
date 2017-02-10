@@ -62,6 +62,12 @@ def _query_db( engine ):
    for section in student.course_sections:
       print( "--> {}: {}".format( section.time.strftime( "%H:%M:%S" ), section.course.name ) )
 
+   course = db_session.query( Course ).first()
+
+   print( "Course '{}' has {:d} sections:".format( course.name, len( course.sections ) ) )
+   for section in course.sections:
+      print( "--> {}".format( section.time.strftime( "%H:%M:%S" ) ) )
+
 def main():
    db_filename = "model_test_db.sqlite3"
 

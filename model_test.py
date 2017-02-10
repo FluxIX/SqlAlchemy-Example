@@ -29,7 +29,7 @@ class Student( _Base ):
    id = Column( Integer, primary_key = True )
    name = Column( String( 50 ), unique = True, nullable = False )
 
-   course_sections = relationship( "CourseSection", secondary = _TableNames.CourseSectionMembers )
+   course_sections = relationship( "CourseSection", uselist = True, secondary = _TableNames.CourseSectionMembers )
 
 class Course( _Base ):
    __tablename__ = _TableNames.Course
@@ -38,6 +38,8 @@ class Course( _Base ):
    name = Column( String( 50 ), unique = True, nullable = False )
    description = Column( String( 16000 ), nullable = True )
 
+   sections = relationship( "CourseSection", uselist = True )
+
 class CourseSection( _Base ):
    __tablename__ = _TableNames.CourseSection
 
@@ -45,7 +47,7 @@ class CourseSection( _Base ):
    time = Column( Time, primary_key = True )
    id = Column( String( 36 ), nullable = True, default = generate_uuid )
 
-   students = relationship( "Student", secondary = _TableNames.CourseSectionMembers )
+   students = relationship( "Student", uselist = True, secondary = _TableNames.CourseSectionMembers )
    course = relationship( "Course", uselist = False )
 
 class CourseSectionMembers( _Base ):
